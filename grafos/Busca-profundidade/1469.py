@@ -28,9 +28,9 @@ class Graph:
     def printGraph(self):
         for vertex_name in self.vertices:
             vertex = self.vertices[vertex_name]
-            print(f"Vertex {vertex_name}:")
+            print(f"Vertex {vertex_name}, {vertex.age}:")
             for edge in vertex.edges:
-                print(f"  -> {edge[0]} (weight={edge[1]})")
+                print(f"  -> {edge[0]}")
 
 while True: 
     N, M, I = map(int, input().split())
@@ -65,4 +65,12 @@ while True:
         edgesCount = edgesCount + 1
     
     g.printGraph()
+    
+    while I > 0:
+        instruction, left, right = input().split()
+        left = int(left)
+        right = int(right)
         
+        print(instruction,left,right)
+        
+        I = I - 1
