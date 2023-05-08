@@ -25,6 +25,11 @@ class Graph:
         self.vertices[vertex1].addEdge(vertex2, weight)
         self.vertices[vertex2].addEdge(vertex1, weight)
     
+    def changeAges(self, left, right):
+        vertex_aux_age = self.vertices[left].age
+        self.vertices[left].age = self.vertices[right].age
+        self.vertices[right].age = vertex_aux_age
+    
     def printGraph(self):
         for vertex_name in self.vertices:
             vertex = self.vertices[vertex_name]
@@ -71,6 +76,14 @@ while True:
         left = int(left)
         right = int(right)
         
-        print(instruction,left,right)
+        if instruction == 'T':
+            g.changeAges(left, right)
+        
+        # if instruction == 'P':
+
+
+        print("\n")
+        
+        g.printGraph()
         
         I = I - 1
