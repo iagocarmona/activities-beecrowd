@@ -1,3 +1,5 @@
+# CHEFE
+
 class Vertex:
     def __init__(self, name, age):
         self.name = name
@@ -23,7 +25,6 @@ class Graph:
             self.addVertex(vertex2)
         
         self.vertices[vertex1].addEdge(vertex2, weight)
-        self.vertices[vertex2].addEdge(vertex1, weight)
     
     def changeAges(self, left, right):
         vertex_aux_age = self.vertices[left].age
