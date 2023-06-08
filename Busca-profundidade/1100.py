@@ -1,110 +1,104 @@
-from queue import Queue
+# MOVIMENTOS DO CAVALO
 
-class Vertex:
-    def __init__(self, name):
-        self.name = name
-        self.edges = []
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+#include <set>
+#include <queue>
+#include <algorithm>
+using namespace std;
 
-    def addEdge(self, vertex, weight=0):
-        self.edges.append((vertex, weight))
+class Vertex {
+public:
+    string name;
+    vector<pair<string, int>> edges;
 
+    Vertex(string n) {
+        name = n;
+    }
 
-class Graph:
-    def __init__(self, num_vertices):
-        self.vertices = {}
-        self.num_vertices = num_vertices
+    void addEdge(string vertex, int weight) {
+        edges.push_back(make_pair(vertex, weight));
+    }
+};
 
-    def addVertex(self, vertex):
-        new_vertex = Vertex(vertex)
-        self.vertices[vertex] = new_vertex
+class Graph {
+public:
+    unordered_map<string, Vertex*> vertices;
 
-    def addEdge(self, vertex1, vertex2, weight=0):
-        if vertex1 not in self.vertices:
-            self.addVertex(vertex1)
-        if vertex2 not in self.vertices:
-            self.addVertex(vertex2)
-        
-        self.vertices[vertex1].addEdge(vertex2, weight)
-        self.vertices[vertex2].addEdge(vertex1, weight)
-    
-    def DFS(self, vertex, visited, component):
-        visited.add(vertex)
-        component.add(vertex)
-        for neighbor, _ in self.vertices[vertex].edges:
-            if neighbor not in visited:
-                self.DFS(neighbor, visited, component)
+    void addVertex(string name) {
+        if (vertices.find(name) == vertices.end()) {
+            vertices[name] = new Vertex(name);
+        }
+    }
 
-    def findComponents(self):
-        visited = set()
-        components = []
-        for vertex in self.vertices:
-            if vertex not in visited:
-                component = set()
-                self.DFS(vertex, visited, component)
-                components.append(component)
-        # Adicionar vértices isolados como componentes
-        for vertex in self.vertices:
-            if vertex not in visited:
-                component = set()
-                component.add(vertex)
-                components.append(component)
-        num_components = len(components)
-        return components, num_components
-    
-    def findShortestPathDFS(self, start, end):
-        # Inicializa as variáveis de controle
-        visited = set()
-        parent = {}
-        queue = Queue()
-        queue.put(start)
-        parent[start] = None
+    void addEdge(string v1, string v2, int weight) {
+        addVertex(v1);
+        addVertex(v2);
+        vertices[v1]->addEdge(v2, weight);
+        vertices[v2]->addEdge(v1, weight);
+    }
 
-        # Executa a busca em largura
-        while not queue.empty():
-            current_vertex = queue.get()
-            visited.add(current_vertex)
-            if current_vertex == end:
-                break
-            for neighbor, _ in self.vertices[current_vertex].edges:
-                if neighbor not in visited:
-                    parent[neighbor] = current_vertex
-                    queue.put(neighbor)
+    vector<string> findShortestPathBFS(string start, string end) {
+        unordered_map<string, bool> visited;
+        unordered_map<string, string> parent;
+        queue<string> q;
+        vector<string> path;
 
-        # Monta o caminho percorrido
-        path = []
-        current_vertex = end
-        while current_vertex is not None:
-            path.append(current_vertex)
-            current_vertex = parent[current_vertex]
-        path.reverse()
+        q.push(start);
+        visited[start] = true;
+        parent[start] = "";
+        while (!q.empty()) {
+            string curr = q.front();
+            q.pop();
+            if (curr == end) {
+                while (curr != "") {
+                    path.push_back(curr);
+                    curr = parent[curr];
+                }
+                break;
+            }
+            for (auto neighbor : vertices[curr]->edges) {
+                string neighbor_name = neighbor.first;
+                if (!visited[neighbor_name]) {
+                    visited[neighbor_name] = true;
+                    parent[neighbor_name] = curr;
+                    q.push(neighbor_name);
+                }
+            }
+        }
+        reverse(path.begin(), path.end());
+        return path;
+    }
+};
 
-        return path
-        
-graph = Graph(64)
+int main() {
+    Graph graph;
+    // Adicionando arestas para o tabuleiro de xadrez
+    for (int row = 0; row < 8; row++) {
+        for (int col = 0; col < 8; col++) {
+            string vertex = string(1, char('a' + col)) + to_string(row + 1);
+            // Movimentos do cavalo
+            vector<pair<int, int>> possible_moves = {
+                {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+                {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+            };
+            for (auto move : possible_moves) {
+                int new_col = col + move.first;
+                int new_row = row + move.second;
+                if (new_col >= 0 && new_col < 8 && new_row >= 0 && new_row < 8) {
+                    string neighbor = string(1, char('a' + new_col)) + to_string(new_row + 1);
+                    graph.addEdge(vertex, neighbor, 1);
+                }
+            }
+        }
+    }
 
-# Adicionando arestas para o tabuleiro de xadrez
-for row in range(8):
-    for col in range(8):
-        vertex = f"{chr(ord('a') + col)}{row + 1}"
-        # Movimentos do cavalo
-        possible_moves = [
-            (2, 1), (2, -1), (-2, 1), (-2, -1),
-            (1, 2), (1, -2), (-1, 2), (-1, -2)
-        ]
-        for move in possible_moves:
-            new_col = col + move[0]
-            new_row = row + move[1]
-            if 0 <= new_col < 8 and 0 <= new_row < 8:
-                neighbor = f"{chr(ord('a') + new_col)}{new_row + 1}"
-                graph.addEdge(vertex, neighbor)   
-    
-while True:
-    try:
-        start, destination = input().split()
-    except:
-        break
-    
-    shortestPath = graph.findShortestPathDFS(start, destination)
-    
-    print(f"To get from {start} to {destination} takes {len(shortestPath)-1} knight moves.")
+    string start, destination;
+    while (cin >> start >> destination) {
+        auto shortestPath = graph.findShortestPathBFS(start, destination);
 
+        cout << "To get from " << start << " to " << destination << " takes " << shortestPath.size()-1 << " knight moves." << endl;
+    }
+    return 0;
+}

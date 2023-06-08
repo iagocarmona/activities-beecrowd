@@ -1,3 +1,5 @@
+# CHEFE
+
 class Vertex:
     def __init__(self, name, age):
         self.name = name
@@ -23,14 +25,18 @@ class Graph:
             self.addVertex(vertex2)
         
         self.vertices[vertex1].addEdge(vertex2, weight)
-        self.vertices[vertex2].addEdge(vertex1, weight)
+    
+    def changeAges(self, left, right):
+        vertex_aux_age = self.vertices[left].age
+        self.vertices[left].age = self.vertices[right].age
+        self.vertices[right].age = vertex_aux_age
     
     def printGraph(self):
         for vertex_name in self.vertices:
             vertex = self.vertices[vertex_name]
-            print(f"Vertex {vertex_name}:")
+            print(f"Vertex {vertex_name}, {vertex.age}:")
             for edge in vertex.edges:
-                print(f"  -> {edge[0]} (weight={edge[1]})")
+                print(f"  -> {edge[0]}")
 
 while True: 
     N, M, I = map(int, input().split())
@@ -65,4 +71,20 @@ while True:
         edgesCount = edgesCount + 1
     
     g.printGraph()
+    
+    while I > 0:
+        instruction, left, right = input().split()
+        left = int(left)
+        right = int(right)
         
+        if instruction == 'T':
+            g.changeAges(left, right)
+        
+        # if instruction == 'P':
+
+
+        print("\n")
+        
+        g.printGraph()
+        
+        I = I - 1
