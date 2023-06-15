@@ -23,24 +23,27 @@ class Graph:
         
         self.vertices[vertex1].addEdge(vertex2)
     
-    def topologicalSortUtil(self, v, visited, stack):
+    def topologicalSortUtil(self, v, visited, stack, cycle_check):
         visited[v] = True
+        cycle_check[v] = True  # Marcar o vértice como visitado na verificação de ciclo
         for vertex in self.vertices[v].edges:
             if visited[vertex] == False:
-                if self.topologicalSortUtil(vertex, visited, stack):
+                if self.topologicalSortUtil(vertex, visited, stack, cycle_check):
                     return True
-            elif vertex in stack:
+            elif cycle_check[vertex]:
                 return True
         stack.insert(0, v)
+        cycle_check[v] = False  # Resetar o vértice para a verificação de ciclo
         return False
     
     def topologicalSort(self):
-        visited = [False] * (self.num_vertices + 1) 
+        visited = [False] * (self.num_vertices + 1)  # Aumentar o tamanho da lista em 1
         stack = []
+        cycle_check = [False] * (self.num_vertices + 1)  # Aumentar o tamanho da lista em 1
 
         for vertex in self.vertices:
             if visited[vertex] == False:
-                if self.topologicalSortUtil(vertex, visited, stack):
+                if self.topologicalSortUtil(vertex, visited, stack, cycle_check):
                     return None
         
         return stack
