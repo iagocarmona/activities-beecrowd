@@ -1,7 +1,66 @@
-To get from e2 to e4 takes 2 knight moves.
-To get from a1 to b2 takes 4 knight moves.
-To get from b2 to c3 takes 2 knight moves.
-To get from a1 to h8 takes 6 knight moves.
-To get from a1 to h7 takes 5 knight moves.
-To get from h8 to a1 takes 6 knight moves.
-To get from b1 to c3 takes 1 knight moves.
+Vertex 1, 21:
+  -> 2
+  -> 3
+Vertex 2, 33:
+  -> 5
+Vertex 3, 33:
+  -> 5
+  -> 6
+Vertex 4, 18:
+  -> 6
+  -> 7
+Vertex 5, 42:
+Vertex 6, 22:
+  -> 7
+Vertex 7, 26:
+18
+Vertex 1, 21:
+  -> 2
+  -> 3
+Vertex 2, 18:
+  -> 5
+Vertex 3, 33:
+  -> 5
+  -> 6
+Vertex 4, 33:
+  -> 6
+  -> 7
+Vertex 5, 42:
+Vertex 6, 22:
+  -> 7
+Vertex 7, 26:
+21
+18
+Vertex 1, 33:
+  -> 2
+  -> 3
+Vertex 2, 18:
+  -> 5
+Vertex 3, 33:
+  -> 5
+  -> 6
+Vertex 4, 21:
+  -> 6
+  -> 7
+Vertex 5, 42:
+Vertex 6, 22:
+  -> 7
+Vertex 7, 26:
+21
+Vertex 1, 33:
+  -> 2
+  -> 3
+Vertex 2, 18:
+  -> 5
+Vertex 3, 33:
+  -> 5
+  -> 6
+Vertex 4, 26:
+  -> 6
+  -> 7
+Vertex 5, 42:
+Vertex 6, 22:
+  -> 7
+Vertex 7, 21:
+18
+22

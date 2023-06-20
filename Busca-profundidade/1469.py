@@ -1,4 +1,4 @@
-# CHEFE
+# 1469 - Chefe
 
 class Vertex:
     def __init__(self, name, age):
@@ -26,10 +26,63 @@ class Graph:
         
         self.vertices[vertex1].addEdge(vertex2, weight)
     
-    def changeAges(self, left, right):
-        vertex_aux_age = self.vertices[left].age
-        self.vertices[left].age = self.vertices[right].age
-        self.vertices[right].age = vertex_aux_age
+    def invertEdges(self):
+        inverted_edges = []
+
+        # Percorre todas as arestas existentes e as inverte
+        for vertex_name in self.vertices:
+            vertex = self.vertices[vertex_name]
+            for edge in vertex.edges:
+                neighbor = edge[0]
+                inverted_edges.append((neighbor, vertex_name))
+
+        # Remove todas as arestas existentes
+        for vertex_name in self.vertices:
+            vertex = self.vertices[vertex_name]
+            vertex.edges = []
+
+        # Adiciona as arestas invertidas
+        for edge in inverted_edges:
+            vertex_name, neighbor = edge
+            self.addEdge(vertex_name, neighbor)
+    
+    def changeVertex(self, left, right):
+        vertex_aux = self.vertices[left]
+        left_aux_edges = self.vertices[left].edges
+        right_aux_edges = self.vertices[right].edges
+        
+        self.vertices[left] = self.vertices[right]
+        self.vertices[left].edges = left_aux_edges
+        
+        self.vertices[right] = vertex_aux
+        self.vertices[right].edges = right_aux_edges
+    
+    def searchMinAgeManager(self, left):
+        queue = [left]
+        visited = set(queue)
+        min_age = float('inf')
+
+        self.invertEdges()
+
+        while queue:
+            current = queue.pop(0)
+            if current in self.vertices:
+                vertex = self.vertices[current]
+                if vertex.age < min_age:
+                    min_age = vertex.age
+
+                for edge in vertex.edges:
+                    neighbor = edge[0]
+                    if neighbor not in visited:
+                        queue.append(neighbor)
+                        visited.add(neighbor)
+
+        self.invertEdges()
+
+        if min_age == float('inf'):
+            return "*"
+        else:
+            return min_age
     
     def printGraph(self):
         for vertex_name in self.vertices:
@@ -39,7 +92,10 @@ class Graph:
                 print(f"  -> {edge[0]}")
 
 while True: 
-    N, M, I = map(int, input().split())
+    try:
+        N, M, I = map(int, input().split())
+    except:
+        break
     
     if N < 1 or N > 500:
         break
@@ -69,22 +125,24 @@ while True:
         X, Y = map(int, input().split())
         g.addEdge(X,Y)
         edgesCount = edgesCount + 1
-    
+
     g.printGraph()
     
     while I > 0:
-        instruction, left, right = input().split()
-        left = int(left)
-        right = int(right)
+        strInput = input().split()
         
+        instruction = strInput[0]
+        left = int(strInput[1])
+        
+        if len(strInput) == 3:
+            right = int(strInput[2])
+                    
         if instruction == 'T':
-            g.changeAges(left, right)
-        
-        # if instruction == 'P':
-
-
-        print("\n")
-        
-        g.printGraph()
+            g.changeVertex(left, right)
+            g.printGraph()
+            
+        if instruction == 'P':
+            min_age = g.searchMinAgeManager(left)
+            print(min_age)
         
         I = I - 1
